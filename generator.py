@@ -1,6 +1,9 @@
 import random
 
 class Generator:
+
+
+
     _score = 0
     _REMARKS = {
         'positive' : ['Very good!', 'Well done!', 'Correct'],
@@ -25,18 +28,19 @@ class Generator:
         '''
 
 
-        match self.o:
-            case 'ADD':
-                return self.a + self.b
-            case 'MUL':
-                return self.a * self.b
-            case 'DIV':
-                try:
-                    return self.a / self.b
-                except ZeroDivisionError:
-                    return 'inf'
-            case 'SUB':
-                return a > b ? self.a - self.b : self.b - self.a
+        if self.o == 'ADD':
+            return self.a + self.b
+        elif self.o == 'MUL':
+            return self.a * self.b
+        elif self.o == 'DIV':
+            try:
+                return self.a / self.b
+            except ZeroDivisionError:
+                return 'inf'
+        elif self.o == 'SUB':
+            return self.a - self.b if a > b else self.b - self.a
+        else:
+            raise ValueError("Invalid operation type")
 
     def __str__(self):
 
@@ -44,15 +48,16 @@ class Generator:
         String representation according to requirement.
         '''
 
-        match self.o:
-            case 'ADD':
-                return str(self.a) + " added to " + str(self.b) + " is "
-            case 'MUL':
-                return str(self.a) + " times " + str(self.b) + " is "
-            case 'DIV':
-                return str(self.a) + " over " + str(self.b) + " is "
-            case 'SUB':
-                return str(self.a) + " subracted from " + str(self.b) + " is "
+        if self.o == 'ADD':
+            return str(self.a) + " added to " + str(self.b) + " is "
+        elif self.o == 'MUL':
+            return str(self.a) + " times " + str(self.b) + " is "
+        elif self.o == 'DIV':
+            return str(self.a) + " over " + str(self.b) + " is "
+        elif self.o == 'SUB':
+            return str(self.a) + " subracted from " + str(self.b) + " is "
+        else:
+            raise ValueError("Invalid operation type")
 
 
     def get_positive_remarks(self):
