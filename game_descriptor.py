@@ -2,6 +2,10 @@ import random
 import time
 import _thread
 
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
 OPERATIONS = {
     0: 'ADD',
     1: 'MUL',
@@ -96,8 +100,11 @@ class Generator:
             return random.choice(_REMARKS['positive'])
         return random.choice(_REMARKS['negative'])
     
-    def ans(self, ans):
+    def set_ans(self, ans):
         self._ans = ans
+    
+    def get_ans(self):
+        return self._ans
     
 def input_timer(interval=3):
     time.sleep(3)
@@ -111,33 +118,71 @@ def game(interval):
     a, b, c = random.sample(range(0, 20), 3)
     q = Generator(a, b, OPERATIONS[c % len(OPERATIONS)])
     print(q)
-    print(*q.opts(), sep="\t")
+    options = q.opts()
+    print(*options, sep="\t")
     try:
-        _thread.start_new_thread(input_timer, (interval,))
+        # _thread.start_new_thread(input_timer, (interval,))
         ans = int(input())
-        if ans > 0 and ans < 5:
-            q.ans(q.result()[ans])
+        if ans > 0 and ans <= len(options):
+            q.set_ans(options[ans-1])
         else:
             raise ValueError
         
     except ValueError as e:
         print("wrong input")
-        q.ans(None)
+        q.set_ans(None)
     print(q.get_remarks())
     return q
 
+def display_summary(summary):
+    x = []
+    right = []
+    wrong = []
+    fig, ax = plt.subplots()
+    ind = np.arange(len(summary))
+    width = 0.35
+    for name in summary:
+        x.append(name)
+        t, f = 0, 0
+        for q in summary[name]:
+            if q.get_ans() == q.result():
+                t+=1
+            else:
+                f+=1
+        right.append(t)
+        wrong.append(f)
+    ax.bar(ind, right, width, bottom=0, label='right')
+    ax.bar(ind + width, wrong, width, bottom=0, label='wrong')
+    ax.set_title('Scores by user')
+    ax.set_xticks(ind + width / 2, labels=x)
+    ax.legend()
+    ax.autoscale_view()
+    plt.show()
+            
+            
+
+            
+
 def main():
-    itvl, total_questions = 3, 10
-    summary = []
-    u = get_user_info()
-    print(f"Each question must be answered in {itvl} seconds.\nTotal questions {total_questions}\nGame will start in..")
-    for i in range(3):
-        print(3-i)
-        time.sleep(1)
-    for i in range(total_questions):
-        time.sleep(itvl)
-        g = game(interval = 3)
-        summary.append(g)
+    itvl, total_questions = 0, 3
+    summary = {}
+    while True:
+        print(summary)
+        display_summary(summary)
+        u = get_user_info()
+        if u == "exit":
+            break
+        print(f"Each question must be answered in {itvl} seconds.\nTotal questions {total_questions}\nGame will start in..")
+        for i in range(3):
+            print(3-i)
+            time.sleep(1)
+        for i in range(total_questions):
+            g = game(interval = 3)
+            try:
+                summary[u].append(g)
+            except:
+                summary[u] = [g,]
+    
     
     
 
