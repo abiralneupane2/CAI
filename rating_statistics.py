@@ -36,8 +36,8 @@ def display_statistics(data):
         for key, value in c.items():
             print(key, '\t', value)
         
-def draw_bar_diagram(data):
-    c = collections.Counter(data[std])
+def draw_bar_diagram(data, name):
+    c = collections.Counter(data[name])
     plt.bar(c.keys(), c.values())
     plt.show()
          
@@ -48,4 +48,4 @@ if __name__ == '__main__':
     name = input("Enter your name: ")
     data[name] = take_input(name)
     display_statistics(data)
-    draw_bar_diagram(data)
+    draw_bar_diagram(data, name)
